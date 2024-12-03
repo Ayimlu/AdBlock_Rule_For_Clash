@@ -27,7 +27,7 @@ jobs:
           # 检查 mihomo.exe 和 .mihomo_downloaded 标记文件是否存在
           if (-not (Test-Path $exePath) -or -not (Test-Path $downloadMarker)) {
             Write-Host "mihomo.exe or .mihomo_downloaded not found, downloading..."
-            $url = "https://github.com/MetaCubeX/mihomo/releases/download/v1.18.7/mihomo-windows-amd64-compatible-v1.18.7.zip"  # 定义下载 URL
+            $url = "https://github.com/MetaCubeX/mihomo/releases/download/v1.18.10/mihomo-windows-amd64-compatible-v1.18.10.zip"  # 定义下载 URL
             $zipFile = "mihomo.zip"  # 定义下载的 ZIP 文件名
             $maxAttempts = 5  # 定义最大重试次数
             
