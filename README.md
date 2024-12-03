@@ -22,5 +22,5 @@
 
 ## LICENSE
 
-- [CC-BY-SA-4.0 License](https://github.com/REIJI007/AdBlock_Rule_For_Clash/blob/main/LICENSE-CC-BY-NC-SA 4.0)
-- [GPL-3.0 License](https://github.com/REIJI007/AdBlock_Rule_For_Clash/blob/main/LICENSE-GPL 3.0)
+- [CC-BY-SA-4.0 License](https://github.com/REIJI007/AdBlock_Rule_For_Clash/blob/main/LICENSE-CC-BY-NC-SA%204.0)
+- [GPL-3.0 License](https://github.com/Ayimlu/AdBlock_Rule_For_Clash/blob/main/LICENSE-GPL%203.0)
