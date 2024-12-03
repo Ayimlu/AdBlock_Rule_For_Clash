@@ -5,167 +5,79 @@ on:
   schedule:
     - cron: '*/20 * * * *'  # 每20分钟触发一次
 
+env:
+  BRANCH: main
+  WAIT_TIME: 90
+  POLL_INTERVAL: 10
+
 jobs:
-  trigger_adblock_rule_generator_yaml:
+  trigger_workflows_in_sequence:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-      - name: Trigger and verify Run_AdBlock_Rule_Generator_YAML
+
+      - name: Define function to trigger workflows
+        id: define-trigger-function
+        run: |
+          function trigger_and_verify {
+            workflow_id=$1
+            echo "Triggering workflow: $workflow_id"
+
+            # Trigger the workflow
+            response=$(curl -X POST -H "Authorization: token $TOKEN" \
+              -H "Accept: application/vnd.github.v3+json" \
+              "https://api.github.com/repos/${{ github.repository }}/actions/workflows/$workflow_id/dispatches" \
+              -d "{\"ref\":\"${BRANCH}\"}")
+            echo "Trigger response: $response"
+
+            # Poll for workflow completion
+            while true; do
+              status=$(curl -s -H "Authorization: token $TOKEN" \
+                -H "Accept: application/vnd.github.v3+json" \
+                "https://api.github.com/repos/${{ github.repository }}/actions/runs?workflow_id=$workflow_id&status=completed&branch=${BRANCH}" \
+                | jq -r '.workflow_runs[0].conclusion')
+
+              if [[ "$status" == "success" ]]; then
+                echo "Workflow $workflow_id completed successfully."
+                break
+              elif [[ "$status" == "failure" ]]; then
+                echo "Workflow $workflow_id failed."
+                exit 1
+              else
+                echo "Waiting for workflow $workflow_id to complete..."
+                sleep $POLL_INTERVAL
+              fi
+            done
+          }
+
+      - name: Trigger YAML Workflow
         env:
           TOKEN: ${{ secrets.TOKEN }}
         run: |
-          workflow_id="Run_AdBlock_Rule_Generator_YAML.yml"
-          ref="main"
-          # 触发工作流
-          response=$(curl -X POST -H "Authorization: token $TOKEN" \
-            -H "Accept: application/vnd.github.v3+json" \
-            "https://api.github.com/repos/REIJI007/AdBlock_Rule_For_Clash/actions/workflows/$workflow_id/dispatches" \
-            -d "{\"ref\":\"$ref\"}")
-          echo "Triggered workflow $workflow_id: $response"
+          source <(cat $GITHUB_ENV)
+          trigger_and_verify "Run_AdBlock_Rule_Generator_YAML.yml"
+          sleep $WAIT_TIME
 
-          # 验证工作流成功触发和完成
-          while : ; do
-            status=$(curl -s -H "Authorization: token $TOKEN" \
-              -H "Accept: application/vnd.github.v3+json" \
-              "https://api.github.com/repos/REIJI007/AdBlock_Rule_For_Clash/actions/runs?workflow_id=$workflow_id&status=completed&branch=$ref" \
-              | jq -r '.workflow_runs[0].conclusion')
-
-            if [[ "$status" == "success" ]]; then
-              echo "Workflow $workflow_id completed successfully."
-              break
-            elif [[ "$status" == "failure" ]]; then
-              echo "Workflow $workflow_id failed."
-              exit 1
-            else
-              echo "Waiting for workflow $workflow_id to complete..."
-              sleep 30
-            fi
-          done
-
-
-          # 等待90秒后开始下一个工作流
-          echo "Waiting for 90 seconds before starting the next workflow..."
-          sleep 90
-
-  trigger_adblock_rule_generator_txt:
-    needs: trigger_adblock_rule_generator_yaml
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-      - name: Trigger and verify Run_AdBlock_Rule_Generator_TXT
+      - name: Trigger TXT Workflow
         env:
           TOKEN: ${{ secrets.TOKEN }}
         run: |
-          workflow_id="Run_AdBlock_Rule_Generator_TXT.yml"
-          ref="main"
-          # 触发工作流
-          response=$(curl -X POST -H "Authorization: token $TOKEN" \
-            -H "Accept: application/vnd.github.v3+json" \
-            "https://api.github.com/repos/REIJI007/AdBlock_Rule_For_Clash/actions/workflows/$workflow_id/dispatches" \
-            -d "{\"ref\":\"$ref\"}")
-          echo "Triggered workflow $workflow_id: $response"
+          source <(cat $GITHUB_ENV)
+          trigger_and_verify "Run_AdBlock_Rule_Generator_TXT.yml"
+          sleep $WAIT_TIME
 
-          # 验证工作流成功触发和完成
-          while : ; do
-            status=$(curl -s -H "Authorization: token $TOKEN" \
-              -H "Accept: application/vnd.github.v3+json" \
-              "https://api.github.com/repos/REIJI007/AdBlock_Rule_For_Clash/actions/runs?workflow_id=$workflow_id&status=completed&branch=$ref" \
-              | jq -r '.workflow_runs[0].conclusion')
-
-            if [[ "$status" == "success" ]]; then
-              echo "Workflow $workflow_id completed successfully."
-              break
-            elif [[ "$status" == "failure" ]]; then
-              echo "Workflow $workflow_id failed."
-              exit 1
-            else
-              echo "Waiting for workflow $workflow_id to complete..."
-              sleep 30
-            fi
-          done
-
-          # 等待90秒后开始下一个工作流
-          echo "Waiting for 90 seconds before starting the next workflow..."
-          sleep 90
-
-  trigger_convert_ruleset_yaml_to_mrs:
-    needs: trigger_adblock_rule_generator_txt
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-      - name: Trigger and verify Convert_Ruleset_YAML_to_MRS
+      - name: Trigger YAML to MRS Workflow
         env:
           TOKEN: ${{ secrets.TOKEN }}
         run: |
-          workflow_id="Convert_Ruleset_YAML_to_MRS.yml"
-          ref="main"
-          # 触发工作流
-          response=$(curl -X POST -H "Authorization: token $TOKEN" \
-            -H "Accept: application/vnd.github.v3+json" \
-            "https://api.github.com/repos/REIJI007/AdBlock_Rule_For_Clash/actions/workflows/$workflow_id/dispatches" \
-            -d "{\"ref\":\"$ref\"}")
-          echo "Triggered workflow $workflow_id: $response"
+          source <(cat $GITHUB_ENV)
+          trigger_and_verify "Convert_Ruleset_YAML_to_MRS.yml"
+          sleep $WAIT_TIME
 
-          # 验证工作流成功触发和完成
-          while : ; do
-            status=$(curl -s -H "Authorization: token $TOKEN" \
-              -H "Accept: application/vnd.github.v3+json" \
-              "https://api.github.com/repos/REIJI007/AdBlock_Rule_For_Clash/actions/runs?workflow_id=$workflow_id&status=completed&branch=$ref" \
-              | jq -r '.workflow_runs[0].conclusion')
-
-            if [[ "$status" == "success" ]]; then
-              echo "Workflow $workflow_id completed successfully."
-              break
-            elif [[ "$status" == "failure" ]]; then
-              echo "Workflow $workflow_id failed."
-              exit 1
-            else
-              echo "Waiting for workflow $workflow_id to complete..."
-              sleep 30
-            fi
-          done
-
-          # 等待90秒后开始下一个工作流
-          echo "Waiting for 90 seconds before starting the next workflow..."
-          sleep 90
-
-  trigger_release_adblock_file:
-    needs: trigger_convert_ruleset_yaml_to_mrs
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-      - name: Trigger and verify Release_ADblock_file
+      - name: Trigger Release Workflow
         env:
           TOKEN: ${{ secrets.TOKEN }}
         run: |
-          workflow_id="Release_ADblock_file.yml"
-          ref="main"
-          # 触发工作流
-          response=$(curl -X POST -H "Authorization: token $TOKEN" \
-            -H "Accept: application/vnd.github.v3+json" \
-            "https://api.github.com/repos/REIJI007/AdBlock_Rule_For_Clash/actions/workflows/$workflow_id/dispatches" \
-            -d "{\"ref\":\"$ref\"}")
-          echo "Triggered workflow $workflow_id: $response"
-
-          # 验证工作流成功触发和完成
-          while : ; do
-            status=$(curl -s -H "Authorization: token $TOKEN" \
-              -H "Accept: application/vnd.github.v3+json" \
-              "https://api.github.com/repos/REIJI007/AdBlock_Rule_For_Clash/actions/runs?workflow_id=$workflow_id&status=completed&branch=$ref" \
-              | jq -r '.workflow_runs[0].conclusion')
-
-            if [[ "$status" == "success" ]]; then
-              echo "Workflow $workflow_id completed successfully."
-              break
-            elif [[ "$status" == "failure" ]]; then
-              echo "Workflow $workflow_id failed."
-              exit 1
-            else
-              echo "Waiting for workflow $workflow_id to complete..."
-              sleep 30
-            fi
-          done
+          source <(cat $GITHUB_ENV)
+          trigger_and_verify "Release_ADblock_file.yml"
