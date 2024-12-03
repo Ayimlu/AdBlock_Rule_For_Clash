@@ -9,6 +9,7 @@ $urlList = @(
 "https://raw.githubusercontent.com/afwfv/DD-AD/main/rule/all.txt",  
 "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/ultimate.txt",  
 "https://raw.githubusercontent.com/hululu1068/AdGuard-Rule/main/rule/all.txt",  
+"https://raw.githubusercontent.com/Cats-Team/AdRules/main/adblock_plus.txt",
 "https://raw.githubusercontent.com/Lynricsy/HyperADRules/master/rules.txt"
 )
 
