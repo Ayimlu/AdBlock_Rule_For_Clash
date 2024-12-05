@@ -11,6 +11,7 @@ $urlList = @(
 "https://raw.githubusercontent.com/hululu1068/AdGuard-Rule/main/rule/all.txt",  
 "https://raw.githubusercontent.com/Cats-Team/AdRules/main/adblock_plus.txt",
 "https://raw.githubusercontent.com/Lynricsy/HyperADRules/master/rules.txt",
+"https://big.oisd.nl",
 "https://raw.githubusercontent.com/AdguardTeam/FiltersRegistry/master/filters/filter_2_Base/filter.txt",  
 "https://raw.githubusercontent.com/AdguardTeam/FiltersRegistry/master/filters/filter_3_Spyware/filter.txt",  
 "https://raw.githubusercontent.com/AdguardTeam/FiltersRegistry/master/filters/filter_4_Social/filter.txt",  
