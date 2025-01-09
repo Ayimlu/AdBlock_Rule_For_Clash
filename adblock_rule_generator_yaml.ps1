@@ -6,10 +6,8 @@
 
 # 定义广告过滤器URL列表
 $urlList = @(
-"https://raw.githubusercontent.com/afwfv/DD-AD/main/rule/all.txt",  
 "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/ultimate.txt",   
 "https://raw.githubusercontent.com/Cats-Team/AdRules/main/adblock_plus.txt",
-"https://raw.githubusercontent.com/Lynricsy/HyperADRules/master/rules.txt",
 "https://raw.githubusercontent.com/TG-Twilight/AWAvenue-Ads-Rule/main/AWAvenue-Ads-Rule.txt",
 "https://big.oisd.nl",
 "https://raw.githubusercontent.com/AdguardTeam/FiltersRegistry/master/filters/filter_2_Base/filter.txt",  
