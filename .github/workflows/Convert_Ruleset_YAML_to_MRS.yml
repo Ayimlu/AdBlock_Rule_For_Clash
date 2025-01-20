@@ -33,7 +33,7 @@ jobs:
             
             for ($attempt = 1; $attempt -le $maxAttempts; $attempt++) {
               try {
-                Write-Host "Downloading mihomo v1.18.7 (Attempt $attempt)..."
+                Write-Host "Downloading mihomo v1.19.1 (Attempt $attempt)..."
                 Invoke-WebRequest -Uri $url -OutFile $zipFile -TimeoutSec 300  # 下载 ZIP 文件
                 
                 # 解压和重命名 mihomo.exe
